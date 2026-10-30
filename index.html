@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<meta name="description" content="مساعد متابعة وتحليل الذهب XAU/USD">
+<link rel="manifest" href="manifest.webmanifest">
+<title>GOLD AI TRADER</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#131e30;--muted:#9aabc2;--line:#26364d;--gold:#f2c66d;--green:#20bd82;--red:#ef6473;--blue:#72a9ff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#101b2d,#080e18);color:#edf3fb;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 14px calc(22px + env(safe-area-inset-bottom));}
+main{max-width:560px;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;padding:20px 2px 14px}.brand{font-weight:850;letter-spacing:.4px}.brand span{color:var(--gold)}.pill{font-size:11px;border:1px solid var(--line);padding:6px 9px;border-radius:99px;color:var(--muted)}
+.card{background:rgba(19,30,48,.96);border:1px solid var(--line);border-radius:19px;padding:16px;margin:11px 0;box-shadow:0 12px 35px #0003}
+.kicker{font-size:12px;color:var(--muted)}.price{font-size:38px;font-weight:850;letter-spacing:-1px;margin:5px 0}.sub{font-size:12px;color:var(--muted);line-height:1.7}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.status{font-size:12px;color:var(--gold)}.signal{font-size:21px;font-weight:850;margin:8px 0}.signal.buy{color:var(--green)}.signal.sell{color:var(--red)}.signal.wait{color:var(--gold)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{background:#0d1727;border:1px solid #213149;padding:11px;border-radius:13px}.metric small{display:block;color:var(--muted);font-size:11px}.metric b{display:block;margin-top:5px;font-size:15px}
+button{border:0;border-radius:12px;padding:13px 14px;font-weight:750;font-size:14px;cursor:pointer}.primary{background:var(--gold);color:#17120a;width:100%}.ghost{background:#1b2b42;color:#dce8f8}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.actions button:first-child{background:#174a3c;color:#baffdf}.actions button:last-child{background:#4b2633;color:#ffd5dc}
+.note{font-size:11px;color:var(--muted);line-height:1.8}.chart{width:100%;height:120px;background:#0d1727;border-radius:12px;margin-top:12px}.foot{text-align:center;color:#74849b;font-size:10px;padding:15px 5px}.warn{border-color:#725b2d;background:#251f13;color:#f5d994}.hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+ <header class="top"><div class="brand">GOLD <span>AI</span> TRADER</div><div class="pill">نسخة أولى · تجريبية</div></header>
+ <section class="card">
+  <div class="row"><div class="kicker">سعر الذهب الفوري · XAU/USD</div><div class="status" id="connection">جارٍ الاتصال...</div></div>
+  <div class="price" id="price">—</div>
+  <div class="row"><div class="sub" id="stamp">لم تصل بيانات بعد</div><div class="sub">USD / أونصة</div></div>
+  <svg class="chart" id="chart" viewBox="0 0 320 120" preserveAspectRatio="none" aria-label="رسم تغير السعر">
+   <path id="line" d="" fill="none" stroke="#f2c66d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+ </section>
+ <section class="card">
+  <div class="row"><div class="kicker">قراءة المؤشرات · عينة 5 دقائق</div><div class="pill">EMA 20/50 + RSI 14</div></div>
+  <div class="signal wait" id="signal">بانتظار بيانات كافية</div>
+  <div class="sub" id="reason">سيتم عرض ميل المؤشرات بعد توفر سجل أسعار كافٍ.</div>
+  <div class="grid" style="margin-top:14px">
+   <div class="metric"><small>EMA 20</small><b id="ema20">—</b></div>
+   <div class="metric"><small>EMA 50</small><b id="ema50">—</b></div>
+   <div class="metric"><small>RSI 14</small><b id="rsi">—</b></div>
+   <div class="metric"><small>آخر تحديث</small><b id="age">—</b></div>
+  </div>
+ </section>
+ <section class="card">
+  <div class="kicker">خطة تداول للمراجعة فقط</div>
+  <div class="grid" style="margin-top:12px">
+   <div class="metric"><small>الاتجاه المقترح</small><b id="direction">انتظار</b></div>
+   <div class="metric"><small>قوة الإشارة</small><b id="strength">غير كافية</b></div>
+  </div>
+  <p class="note" style="margin-bottom:0">هذه النسخة لا تنفذ صفقات ولا تتصل بحساب MT5. لا تعرض دخولاً أو وقفاً أو هدفاً رقمياً لأن سعر الوسيط وحجم العقد والسبريد غير معروفين. استخدم سعر وسيطك قبل أي قرار.</p>
+ </section>
+ <section class="card warn">
+  <b style="font-size:13px">تنبيه مهم حول البيانات</b>
+  <p class="note" style="color:#f5d994;margin-bottom:0">السعر مرجعي فوري من XAUS وليس سعر تنفيذ مضموناً لدى وسيطك. قد يتأخر أو يختلف عن XAUUSD في MT5. إذا كانت البيانات قديمة أو غير متاحة، ستظهر الحالة بوضوح ولن نخترع سعراً.</p>
+ </section>
+ <button class="primary" id="refresh">تحديث السعر الآن</button>
+ <div class="foot">Gold price data by <a href="https://xaus.com/api/" target="_blank" rel="noopener" style="color:#eac66f">XAUS</a> · للاستخدام الشخصي والتعلم · ليس نصيحة استثمارية</div>
+</main>
+<script>
+const API_SPOT='https://xaus.com/api/v1/spot?compact=1';
+const API_INTRADAY='https://xaus.com/api/v1/intraday?symbol=xau&hours=24';
+const $=id=>document.getElementById(id);
+let prices=[];
+function fmt(n){return Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function ema(values,period){if(values.length<period)return null;let k=2/(period+1),v=values.slice(0,period).reduce((a,b)=>a+b,0)/period;for(let i=period;i<values.length;i++)v=values[i]*k+v*(1-k);return v;}
+function rsi(values,period=14){if(values.length<=period)return null;let gains=0,losses=0;for(let i=values.length-period;i<values.length;i++){let d=values[i]-values[i-1];if(d>0)gains+=d;else losses-=d;}if(losses===0)return 100;let rs=(gains/period)/(losses/period);return 100-100/(1+rs);}
+function draw(values){if(values.length<2)return;let lo=Math.min(...values),hi=Math.max(...values),span=hi-lo||1;let d=values.map((v,i)=>`${i?'L':'M'} ${(i/(values.length-1)*320).toFixed(1)} ${(110-(v-lo)/span*100).toFixed(1)}`).join(' ');$('line').setAttribute('d',d);}
+function setSignal(vals){
+ const e20=ema(vals,20),e50=ema(vals,50),rv=rsi(vals,14);
+ $('ema20').textContent=e20?fmt(e20):'—';$('ema50').textContent=e50?fmt(e50):'—';$('rsi').textContent=rv?rv.toFixed(1):'—';
+ if(e20===null||e50===null||rv===null){$('signal').textContent='بانتظار بيانات كافية';$('signal').className='signal wait';$('reason').textContent='نحتاج 50 قراءة تقريباً قبل تقييم المؤشرات.';$('direction').textContent='انتظار';$('strength').textContent='غير كافية';return;}
+ let up=e20>e50&&rv>=52&&rv<70,down=e20<e50&&rv<=48&&rv>30;
+ if(up){$('signal').textContent='ميل صاعد · راجع الشراء';$('signal').className='signal buy';$('reason').textContent='EMA20 أعلى EMA50 وRSI يؤيد الزخم. ليست توصية دخول مؤكدة.';$('direction').textContent='ميل شراء';$('strength').textContent='متوافقة';}
+ else if(down){$('signal').textContent='ميل هابط · راجع البيع';$('signal').className='signal sell';$('reason').textContent='EMA20 أدنى EMA50 وRSI يؤيد الزخم. ليست توصية دخول مؤكدة.';$('direction').textContent='ميل بيع';$('strength').textContent='متوافقة';}
+ else{$('signal').textContent='لا توجد إشارة واضحة';$('signal').className='signal wait';$('reason').textContent='المؤشرات غير متوافقة أو السوق في منطقة تشبع؛ الأفضل الانتظار.';$('direction').textContent='انتظار';$('strength').textContent='متضاربة';}
+}
+async function refresh(){
+ $('connection').textContent='تحديث...';
+ try{
+  const [spotRes,intraRes]=await Promise.all([fetch(API_SPOT,{cache:'no-store'}),fetch(API_INTRADAY,{cache:'no-store'})]);
+  if(!spotRes.ok)throw new Error('تعذر جلب السعر ('+spotRes.status+')');
+  const spot=await spotRes.json();
+  const p=Number(spot.spot_usd_oz);
+  if(!Number.isFinite(p)||p<=0)throw new Error('بيانات السعر غير صالحة');
+  $('price').textContent=fmt(p);
+  const time=spot.price_as_of||spot.updated_at||new Date().toISOString();
+  $('stamp').textContent='وقت المصدر: '+new Date(time).toLocaleString('ar-LY');
+  const state=spot.data_state?.status|| (spot.stale?'stale':'fresh');
+  const age=spot.data_state?.age_seconds;
+  $('connection').textContent=state==='fresh'?'متصل · مرجعي':state==='stale'?'بيانات قديمة':'حالة غير معروفة';
+  $('age').textContent=Number.isFinite(age)?Math.round(age/60)+' د':'—';
+  if(intraRes.ok){
+    const intr=await intraRes.json();
+    let pts=Array.isArray(intr.points)?intr.points:[];
+    let vals=pts.map(x=>Number(x.p)).filter(x=>Number.isFinite(x)&&x>0);
+    if(vals.length){prices=vals.slice(-250);draw(prices.slice(-80));setSignal(prices);}
+  }
+  if(state==='stale')$('connection').textContent='تنبيه · آخر سعر محفوظ';
+ }catch(e){$('connection').textContent='تعذر الاتصال';$('reason').textContent=e.message+' — تحقق من الإنترنت وحاول مجدداً.';}
+}
+$('refresh').addEventListener('click',refresh);
+refresh();
+setInterval(refresh,60000);
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
