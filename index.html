@@ -15,7 +15,7 @@ main{max-width:560px;margin:auto}.top{display:flex;align-items:center;justify-co
 .kicker{font-size:12px;color:var(--muted)}.price{font-size:38px;font-weight:850;letter-spacing:-1px;margin:5px 0}.sub{font-size:12px;color:var(--muted);line-height:1.7}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.status{font-size:12px;color:var(--gold)}.signal{font-size:21px;font-weight:850;margin:8px 0}.signal.buy{color:var(--green)}.signal.sell{color:var(--red)}.signal.wait{color:var(--gold)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{background:#0d1727;border:1px solid #213149;padding:11px;border-radius:13px}.metric small{display:block;color:var(--muted);font-size:11px}.metric b{display:block;margin-top:5px;font-size:15px}
 button{border:0;border-radius:12px;padding:13px 14px;font-weight:750;font-size:14px;cursor:pointer}.primary{background:var(--gold);color:#17120a;width:100%}.ghost{background:#1b2b42;color:#dce8f8}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.actions button:first-child{background:#174a3c;color:#baffdf}.actions button:last-child{background:#4b2633;color:#ffd5dc}
-.note{font-size:11px;color:var(--muted);line-height:1.8}.chart{width:100%;height:120px;background:#0d1727;border-radius:12px;margin-top:12px}.foot{text-align:center;color:#74849b;font-size:10px;padding:15px 5px}.warn{border-color:#725b2d;background:#251f13;color:#f5d994}.hidden{display:none}
+.note{font-size:11px;color:var(--muted);line-height:1.8}.chart{width:100%;height:120px;background:#0d1727;border-radius:12px;margin-top:12px}.foot{text-align:center;color:#74849b;font-size:10px;padding:15px 5px}.warn{border-color:#725b2d;background:#251f13;color:#f5d994}.hidden{display:none} input{width:100%;background:#0d1727;border:1px solid #30435e;border-radius:11px;padding:12px;color:#fff;font:inherit;margin-top:6px} label{font-size:12px;color:var(--muted);display:block}.field{margin:9px 0}.good{color:var(--green)}.bad{color:var(--red)}
 </style>
 </head>
 <body>
@@ -48,6 +48,9 @@ button{border:0;border-radius:12px;padding:13px 14px;font-weight:750;font-size:1
   </div>
   <p class="note" style="margin-bottom:0">هذه النسخة لا تنفذ صفقات ولا تتصل بحساب MT5. لا تعرض دخولاً أو وقفاً أو هدفاً رقمياً لأن سعر الوسيط وحجم العقد والسبريد غير معروفين. استخدم سعر وسيطك قبل أي قرار.</p>
  </section>
+ <section class="card"><div class="kicker">خطة الدخول والخروج المقترحة</div><div class="signal wait" id="tradeDecision">بانتظار تحليل السوق</div><div class="grid"><div class="metric"><small>دخول مرجعي</small><b id="entryPrice">—</b></div><div class="metric"><small>وقف خسارة تقديري</small><b id="stopPrice">—</b></div><div class="metric"><small>هدف أول تقديري</small><b id="targetPrice">—</b></div><div class="metric"><small>العائد للمخاطرة</small><b id="rr">—</b></div></div><p class="note" id="tradeReason">تظهر الخطة عند توفر بيانات كافية وتوافق المؤشرات.</p></section>
+ <section class="card"><div class="kicker">حاسبة رأس المال والمخاطرة</div><div class="field"><label for="capital">رأس مالك بالدولار</label><input id="capital" type="number" min="1" step="0.01" value="10" inputmode="decimal"></div><div class="field"><label for="riskPct">نسبة المخاطرة (%)</label><input id="riskPct" type="number" min="0.1" max="5" step="0.1" value="1" inputmode="decimal"></div><div class="grid"><div class="metric"><small>المبلغ المعرض للخسارة</small><b id="riskCash">$0.10</b></div><div class="metric"><small>الرصيد بعد خسارة الوقف</small><b id="afterLoss">$9.90</b></div></div><p class="note">حجم اللوت لا يمكن حسابه بدقة دون مواصفات عقد الذهب لدى وسيطك.</p></section>
+ <section class="card"><div class="kicker">حاسبة ربح وخسارة الصفقة</div><div class="grid"><div class="field"><label for="manualEntry">سعر الدخول</label><input id="manualEntry" type="number" step="0.01"></div><div class="field"><label for="manualExit">سعر الخروج</label><input id="manualExit" type="number" step="0.01"></div><div class="field"><label for="ounces">الكمية بالأونصة</label><input id="ounces" type="number" min="0" step="0.001"></div><div class="field"><label for="fees">الرسوم بالدولار</label><input id="fees" type="number" min="0" step="0.01" value="0"></div></div><div class="metric"><small>النتيجة التقديرية بعد الرسوم</small><b id="manualResult">أدخل بيانات الصفقة</b></div><p class="note">يفترض الحساب أن الكمية بالأونصة. الأونصة ليست هي اللوت في MT5.</p></section>
  <section class="card warn">
   <b style="font-size:13px">تنبيه مهم حول البيانات</b>
   <p class="note" style="color:#f5d994;margin-bottom:0">السعر مرجعي فوري من XAUS وليس سعر تنفيذ مضموناً لدى وسيطك. قد يتأخر أو يختلف عن XAUUSD في MT5. إذا كانت البيانات قديمة أو غير متاحة، ستظهر الحالة بوضوح ولن نخترع سعراً.</p>
@@ -65,40 +68,21 @@ function ema(values,period){if(values.length<period)return null;let k=2/(period+
 function rsi(values,period=14){if(values.length<=period)return null;let gains=0,losses=0;for(let i=values.length-period;i<values.length;i++){let d=values[i]-values[i-1];if(d>0)gains+=d;else losses-=d;}if(losses===0)return 100;let rs=(gains/period)/(losses/period);return 100-100/(1+rs);}
 function draw(values){if(values.length<2)return;let lo=Math.min(...values),hi=Math.max(...values),span=hi-lo||1;let d=values.map((v,i)=>`${i?'L':'M'} ${(i/(values.length-1)*320).toFixed(1)} ${(110-(v-lo)/span*100).toFixed(1)}`).join(' ');$('line').setAttribute('d',d);}
 function setSignal(vals){
- const e20=ema(vals,20),e50=ema(vals,50),rv=rsi(vals,14);
- $('ema20').textContent=e20?fmt(e20):'—';$('ema50').textContent=e50?fmt(e50):'—';$('rsi').textContent=rv?rv.toFixed(1):'—';
- if(e20===null||e50===null||rv===null){$('signal').textContent='بانتظار بيانات كافية';$('signal').className='signal wait';$('reason').textContent='نحتاج 50 قراءة تقريباً قبل تقييم المؤشرات.';$('direction').textContent='انتظار';$('strength').textContent='غير كافية';return;}
- let up=e20>e50&&rv>=52&&rv<70,down=e20<e50&&rv<=48&&rv>30;
- if(up){$('signal').textContent='ميل صاعد · راجع الشراء';$('signal').className='signal buy';$('reason').textContent='EMA20 أعلى EMA50 وRSI يؤيد الزخم. ليست توصية دخول مؤكدة.';$('direction').textContent='ميل شراء';$('strength').textContent='متوافقة';}
- else if(down){$('signal').textContent='ميل هابط · راجع البيع';$('signal').className='signal sell';$('reason').textContent='EMA20 أدنى EMA50 وRSI يؤيد الزخم. ليست توصية دخول مؤكدة.';$('direction').textContent='ميل بيع';$('strength').textContent='متوافقة';}
- else{$('signal').textContent='لا توجد إشارة واضحة';$('signal').className='signal wait';$('reason').textContent='المؤشرات غير متوافقة أو السوق في منطقة تشبع؛ الأفضل الانتظار.';$('direction').textContent='انتظار';$('strength').textContent='متضاربة';}
+ const e20=ema(vals,20),e50=ema(vals,50),rv=rsi(vals,14);$('ema20').textContent=e20?fmt(e20):'—';$('ema50').textContent=e50?fmt(e50):'—';$('rsi').textContent=rv?rv.toFixed(1):'—';
+ if(e20===null||e50===null||rv===null){$('signal').textContent='بيانات غير كافية';$('signal').className='signal wait';$('reason').textContent='نحتاج نحو 50 قراءة.';$('direction').textContent='انتظار';$('strength').textContent='غير كافية';return;}
+ const side=e20>e50&&rv>=52&&rv<68?'buy':e20<e50&&rv<=48&&rv>32?'sell':'wait';$('signal').className='signal '+side;
+ $('signal').textContent=side==='buy'?'ميل صاعد · راجع الشراء':side==='sell'?'ميل هابط · راجع البيع':'لا توجد إشارة واضحة';$('reason').textContent=side==='wait'?'المؤشرات غير متوافقة؛ الأفضل الانتظار.':'المؤشرات متوافقة مبدئياً، لكن انتظر تأكيد حركة السعر.';$('direction').textContent=side==='buy'?'ميل شراء':side==='sell'?'ميل بيع':'انتظار';$('strength').textContent=side==='wait'?'متضاربة':'متوافقة';
+ const px=vals[vals.length-1];if(side==='wait'){ $('tradeDecision').textContent='انتظار — لا تدخل الآن';$('tradeDecision').className='signal wait';$('entryPrice').textContent=fmt(px);$('stopPrice').textContent='—';$('targetPrice').textContent='—';$('rr').textContent='—';$('tradeReason').textContent='لا يوجد توافق كافٍ. انتظر إشارة أوضح.';return;}
+ let r=vals.slice(-20),d=[];for(let i=1;i<r.length;i++)d.push(Math.abs(r[i]-r[i-1]));let avg=d.length?d.reduce((x,y)=>x+y,0)/d.length:0,dist=Math.max(px*.0015,avg*3),stop=side==='buy'?px-dist:px+dist,target=side==='buy'?px+dist*1.5:px-dist*1.5;
+ $('tradeDecision').textContent=side==='buy'?'ميل شراء — انتظر تأكيد الشمعة':'ميل بيع — انتظر تأكيد الشمعة';$('tradeDecision').className='signal '+side;$('entryPrice').textContent=fmt(px);$('stopPrice').textContent=fmt(stop);$('targetPrice').textContent=fmt(target);$('rr').textContent='1 : 1.5';$('tradeReason').textContent='مستويات حسابية أولية من تذبذب القراءات، وليست توصية مؤكدة أو محسوبة وفق عقد وسيطك.';updateRisk();
 }
-async function refresh(){
- $('connection').textContent='تحديث...';
- try{
-  const [spotRes,intraRes]=await Promise.all([fetch(API_SPOT,{cache:'no-store'}),fetch(API_INTRADAY,{cache:'no-store'})]);
-  if(!spotRes.ok)throw new Error('تعذر جلب السعر ('+spotRes.status+')');
-  const spot=await spotRes.json();
-  const p=Number(spot.spot_usd_oz);
-  if(!Number.isFinite(p)||p<=0)throw new Error('بيانات السعر غير صالحة');
-  $('price').textContent=fmt(p);
-  const time=spot.price_as_of||spot.updated_at||new Date().toISOString();
-  $('stamp').textContent='وقت المصدر: '+new Date(time).toLocaleString('ar-LY');
-  const state=spot.data_state?.status|| (spot.stale?'stale':'fresh');
-  const age=spot.data_state?.age_seconds;
-  $('connection').textContent=state==='fresh'?'متصل · مرجعي':state==='stale'?'بيانات قديمة':'حالة غير معروفة';
-  $('age').textContent=Number.isFinite(age)?Math.round(age/60)+' د':'—';
-  if(intraRes.ok){
-    const intr=await intraRes.json();
-    let pts=Array.isArray(intr.points)?intr.points:[];
-    let vals=pts.map(x=>Number(x.p)).filter(x=>Number.isFinite(x)&&x>0);
-    if(vals.length){prices=vals.slice(-250);draw(prices.slice(-80));setSignal(prices);}
-  }
-  if(state==='stale')$('connection').textContent='تنبيه · آخر سعر محفوظ';
- }catch(e){$('connection').textContent='تعذر الاتصال';$('reason').textContent=e.message+' — تحقق من الإنترنت وحاول مجدداً.';}
-}
+function updateRisk(){let c=Math.max(0,Number($('capital').value)||0),r=Math.max(0,Number($('riskPct').value)||0),v=c*r/100;$('riskCash').textContent='$'+v.toFixed(2);$('afterLoss').textContent='$'+Math.max(0,c-v).toFixed(2);}
+function calcManual(){let e=Number($('manualEntry').value),x=Number($('manualExit').value),q=Number($('ounces').value),f=Math.max(0,Number($('fees').value)||0);if(e>0&&x>0&&q>0){let v=(x-e)*q-f;$('manualResult').textContent=(v>=0?'+$':'-$')+Math.abs(v).toFixed(2);$('manualResult').className=v>=0?'good':'bad';}}
+['capital','riskPct'].forEach(id=>$(id).addEventListener('input',updateRisk));['manualEntry','manualExit','ounces','fees'].forEach(id=>$(id).addEventListener('input',calcManual));
+
+async function refresh(){ $('connection').textContent='تحديث السعر...';try{const res=await fetch(API_SPOT,{cache:'no-store'});if(!res.ok)throw Error('تعذر جلب السعر');const spot=await res.json(),p=Number(spot.spot_usd_oz);if(!Number.isFinite(p)||p<=0)throw Error('السعر غير صالح');$('price').textContent=fmt(p);const t=spot.price_as_of||spot.updated_at||new Date().toISOString();$('stamp').textContent='وقت المصدر: '+new Date(t).toLocaleString('ar-LY');const state=spot.data_state?.status||(spot.stale?'stale':'fresh'),age=spot.data_state?.age_seconds;$('connection').textContent=state==='fresh'?'متصل · مرجعي':state==='stale'?'بيانات قديمة':'حالة غير معروفة';$('age').textContent=Number.isFinite(age)?Math.round(age/60)+' د':'—';fetch(API_INTRADAY,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(intr=>{let vals=(Array.isArray(intr.points)?intr.points:[]).map(x=>Number(x.p)).filter(x=>Number.isFinite(x)&&x>0);if(vals.length){prices=vals.slice(-250);draw(prices.slice(-80));setSignal(prices);}}).catch(()=>{$('reason').textContent='وصل السعر، لكن سجل المؤشرات تأخر. حاول التحديث لاحقاً.';});if(state==='stale')$('connection').textContent='تنبيه · آخر سعر محفوظ';}catch(e){$('connection').textContent='تعذر الاتصال';$('reason').textContent=e.message+' — تحقق من الإنترنت.';}}
 $('refresh').addEventListener('click',refresh);
-refresh();
+updateRisk();refresh();
 setInterval(refresh,60000);
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
